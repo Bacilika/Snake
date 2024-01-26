@@ -3,17 +3,23 @@ package com.bacilika;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.Random;
 
-public class Board {
-    final private static int height = 20;
-    final private static int width = 20;
+public class Board implements KeyListener {
+    final private static int height = 15;
+    final private static int width = 15;
     private SquareType[][] squares = new SquareType[height][width];
 
     final public static int PANEL_SIZE = 20;
 
+    private Apple apple;
+
     public boolean isRunning = true;
 
-    public SnakePart head = new SnakePart(10,10,null);
+    public SnakePart head;
+    private Random random = new Random();
 
 
     public Board(){
@@ -22,7 +28,29 @@ public class Board {
                 squares[i][j] = SquareType.EMPTY;
             }
         }
+        spawnSnake(3);
         squares[head.getPosition().x][head.getPosition().y] = SquareType.SNAKE;
+
+        spawnApple();
+
+    }
+    public void spawnApple(){
+        Point pos;
+        do {
+            pos = new Point(random.nextInt(0,width-1), random.nextInt(0,height-1));
+            System.out.println(pos);
+        }while (getSquareAt(pos.x, pos.y)== SquareType.SNAKE);
+
+        apple = new Apple(pos);
+        squares[pos.x][pos.y] = SquareType.APPLE;
+    }
+    public void spawnSnake(int length){
+        head = new SnakePart(10,10,null);
+        SnakePart current = head;
+        for (int i = 0; i < length-1; i++) {
+            current = new SnakePart(current.getPosition().x,current.getPosition().y,current);
+
+        }
     }
     public SquareType getSquareAt(int x, int y){
         return squares[x][y];
@@ -38,12 +66,46 @@ public class Board {
 
     public void tick(){
         SnakePart current = head;
+        SnakePart previous = null;
         Point lastPos = head.move();
 
         while(current != null){
             squares[current.getPosition().x][current.getPosition().y] = SquareType.SNAKE;
+            previous = current;
             current = current.getNextPart();
         }
         squares[lastPos.x][lastPos.y] = SquareType.EMPTY;
+
+        if(eatingApple()){
+            System.out.println("APPLE!");
+            new SnakePart(lastPos.x,lastPos.y,previous);
+            spawnApple();
+
+        }
+    }
+    private boolean eatingApple(){
+        return (head.getPosition().equals(apple.getPosition()));
+    }
+
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        switch (e.getKeyCode()){
+            case KeyEvent.VK_UP -> head.setDirection(Direction.UP);
+            case KeyEvent.VK_LEFT -> head.setDirection(Direction.LEFT);
+            case KeyEvent.VK_RIGHT -> head.setDirection(Direction.RIGHT);
+            case  KeyEvent.VK_DOWN -> head.setDirection(Direction.DOWN);
+        }
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
 }

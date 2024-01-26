@@ -19,13 +19,17 @@ public class BoardComponent  extends JComponent {
     protected void paintComponent(final Graphics g){
         super.paintComponent(g);
         final Graphics2D g2d = (Graphics2D) g;
-        for (int i = 0; i < board.getHeight(); i++) {
-            for (int j = 0; j < board.getWidth(); j++) {
+        for (int i = 0; i < Board.getHeight(); i++) {
+            for (int j = 0; j < Board.getWidth(); j++) {
                 color = colors.get(board.getSquareAt(i, j));
                 g2d.setColor(color);
                 g2d.fillRect(i * Board.PANEL_SIZE, j * Board.PANEL_SIZE, Board.PANEL_SIZE, Board.PANEL_SIZE);
-                g2d.setColor(Color.BLACK);
-                g2d.drawRect(i * Board.PANEL_SIZE, j * Board.PANEL_SIZE, Board.PANEL_SIZE, Board.PANEL_SIZE);
+                if(board.getSquareAt(i,j) == SquareType.EMPTY){
+                    g2d.setColor(Color.BLACK);
+                    g2d.drawRect(i * Board.PANEL_SIZE, j * Board.PANEL_SIZE, Board.PANEL_SIZE, Board.PANEL_SIZE);
+
+                }
+
             }
         }
     }

@@ -21,12 +21,13 @@ public class GameFrame extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(WIDTH+20,HEIGHT);
-        clockTimer = new Timer(500, doOneStep);
+        clockTimer = new Timer(250, doOneStep);
         clockTimer.setCoalesce(true);
         clockTimer.start();
         boardComponent = new BoardComponent(board);
         setLayout(new BorderLayout());
         add(boardComponent,BorderLayout.CENTER);
+        addKeyListener(board);
 
 
 

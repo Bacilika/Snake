@@ -6,6 +6,7 @@ public class SnakePart {
     private Rectangle body;
     private SnakePart nextPart;
     private Direction direction = Direction.DOWN;
+    private Direction desiredDirection = null;
 
     private boolean isHead = false;
 
@@ -37,6 +38,9 @@ public class SnakePart {
     }
     public Point move(){
         Point current = new Point(getPosition().x, getPosition().y);
+        if (nextPart != null){
+            current = nextPart.move();
+        }
         if (isHead){
             switch (direction){
                 case UP -> body.setLocation(getPosition().x, getPosition().y-1);
@@ -47,32 +51,54 @@ public class SnakePart {
             if(outOfBounds()){
                 System.out.println("you died");
                 System.exit(0);
-
             }
-
-
         }
         else{
             body.setLocation(previousPart.getPosition());
             direction = previousPart.getDirection();
         }
         position = body.getLocation();
-        if (nextPart != null){
-            return nextPart.move();
-        }
+
+        desiredDirection = null;
         return current;
 
     }
     private boolean outOfBounds(){
         switch (direction){
-            case RIGHT -> {return position.x+2 > Board.getWidth();}
-            case LEFT -> {return position.x-2 < 0;}
-            case DOWN -> {return position.y+2 > Board.getHeight();}
-            case UP -> {return position.y-2 <0;}
+            case RIGHT -> {return position.x+1 > Board.getWidth()-1;}
+            case LEFT -> {return position.x-1 < 0;}
+            case DOWN -> {return position.y+1 > Board.getHeight()-1;}
+            case UP -> {return position.y-1 <0;}
         }
         return false;
     }
+
+    public void setDirection(Direction direction) {
+        if(desiredDirection == null) {
+
+            if (this.direction.ordinal() + direction.ordinal() == 1) { //UP + DOWN
+                return;
+            }
+            if (this.direction.ordinal() + direction.ordinal() == 5) { //LEFT + RIGHT
+                return;
+            }
+
+            this.direction = direction;
+            desiredDirection = direction;
+        }
+    }
+
     public SnakePart getNextPart() {
         return nextPart;
+    }
+    public boolean collisionWithSelf(){
+        SnakePart current = this;
+        while(current != null){
+            if (current.body)
+
+
+            previous = current;
+            current = current.getNextPart();
+        }
     }
 }
