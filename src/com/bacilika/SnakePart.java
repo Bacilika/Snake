@@ -48,10 +48,6 @@ public class SnakePart {
                 case LEFT -> body.setLocation(getPosition().x-1, getPosition().y);
                 case RIGHT -> body.setLocation(getPosition().x+1, getPosition().y);
             }
-            if(outOfBounds()){
-                System.out.println("you died");
-                System.exit(0);
-            }
         }
         else{
             body.setLocation(previousPart.getPosition());
@@ -63,10 +59,10 @@ public class SnakePart {
         return current;
 
     }
-    private boolean outOfBounds(){
+    public boolean outOfBounds(){
         switch (direction){
             case RIGHT -> {return position.x+1 > Board.getWidth()-1;}
-            case LEFT -> {return position.x-1 < 0;}
+            case LEFT -> {return position.x < 0;}
             case DOWN -> {return position.y+1 > Board.getHeight()-1;}
             case UP -> {return position.y-1 <0;}
         }

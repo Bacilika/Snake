@@ -14,6 +14,9 @@ public class Board implements KeyListener {
     public boolean isRunning = false;
     public SnakePart head;
     private final Random random = new Random();
+    public boolean gameOver = false;
+
+    public int score = 0;
 
     public Board(){
         for (int i = 0; i < getHeight(); i++) {
@@ -70,19 +73,21 @@ public class Board implements KeyListener {
         squares[lastPos.x][lastPos.y] = SquareType.EMPTY;
 
         if(eatingApple()){
-            System.out.println("APPLE!");
+            score ++;
             new SnakePart(lastPos.x,lastPos.y,previous);
             spawnApple();
 
         }
-        if (head.collisionWithSelf()){
+        if (head.collisionWithSelf() || head.outOfBounds()){
             System.out.println("you died");
-            System.exit(0);
+            gameOver = true;
+            isRunning = false;
 
         }
+
     }
     private boolean eatingApple(){
-        return (head.getPosition().equals(apple.getPosition()));
+        return (head.getPosition().equals(apple.position()));
     }
 
 
