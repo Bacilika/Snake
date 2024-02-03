@@ -1,8 +1,6 @@
 package com.bacilika;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Random;
@@ -10,17 +8,12 @@ import java.util.Random;
 public class Board implements KeyListener {
     final private static int height = 15;
     final private static int width = 15;
-    private SquareType[][] squares = new SquareType[height][width];
-
-    final public static int PANEL_SIZE = 20;
-
+    private final SquareType[][] squares = new SquareType[height][width];
+    final public static int PANEL_SIZE = 30;
     private Apple apple;
-
-    public boolean isRunning = true;
-
+    public boolean isRunning = false;
     public SnakePart head;
-    private Random random = new Random();
-
+    private final Random random = new Random();
 
     public Board(){
         for (int i = 0; i < getHeight(); i++) {
@@ -45,7 +38,7 @@ public class Board implements KeyListener {
         squares[pos.x][pos.y] = SquareType.APPLE;
     }
     public void spawnSnake(int length){
-        head = new SnakePart(10,10,null);
+        head = new SnakePart(10,2,null);
         SnakePart current = head;
         for (int i = 0; i < length-1; i++) {
             current = new SnakePart(current.getPosition().x,current.getPosition().y,current);
@@ -80,6 +73,11 @@ public class Board implements KeyListener {
             System.out.println("APPLE!");
             new SnakePart(lastPos.x,lastPos.y,previous);
             spawnApple();
+
+        }
+        if (head.collisionWithSelf()){
+            System.out.println("you died");
+            System.exit(0);
 
         }
     }

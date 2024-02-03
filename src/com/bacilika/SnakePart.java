@@ -3,7 +3,7 @@ package com.bacilika;
 import java.awt.*;
 
 public class SnakePart {
-    private Rectangle body;
+    private final Rectangle body;
     private SnakePart nextPart;
     private Direction direction = Direction.DOWN;
     private Direction desiredDirection = null;
@@ -11,7 +11,7 @@ public class SnakePart {
     private boolean isHead = false;
 
     private Point position;
-    private SnakePart previousPart;
+    private final SnakePart previousPart;
     public SnakePart(int xpos, int ypos, SnakePart previousPart){
         position = new Point(xpos,ypos);
         body = new Rectangle(xpos,ypos,10,10);
@@ -92,13 +92,19 @@ public class SnakePart {
         return nextPart;
     }
     public boolean collisionWithSelf(){
-        SnakePart current = this;
-        while(current != null){
-            if (current.body)
+        if(isHead){
+            SnakePart head = this;
+            SnakePart current = head.getNextPart();
+            while(current != null){
+                if (head.body.contains(current.body)){
+                    return true;
+                }
+                current = current.getNextPart();
+            }
 
 
-            previous = current;
-            current = current.getNextPart();
         }
+        return false;
+
     }
 }

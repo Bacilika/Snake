@@ -4,46 +4,66 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-
-public class GameFrame extends JFrame {
-    final private int WIDTH = 560;
-    final private int HEIGHT = 650;
-    private Board board;
-    private Timer clockTimer;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
+public class GameFrame {
+    private final int WIDTH;
+    private final int HEIGHT;
+    private final Board board;
+    public final static int BORDER = 20;
     private final BoardComponent boardComponent;
-
+    private JButton startButton;
+    private final JFrame mainMenu;
+    private final JFrame gameFrame;
     public GameFrame(){
+        mainMenu = new JFrame("Main Menu");
+        gameFrame = new JFrame("Game Frame");
         board = new Board();
-        //Border border = BorderFactory.createLineBorder(Color.BLACK,3);
-        //setLayout(null);
-        setVisible(true);
-        setResizable(false);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(WIDTH+20,HEIGHT);
-        clockTimer = new Timer(250, doOneStep);
+        WIDTH = Board.getWidth()*Board.PANEL_SIZE+BORDER;
+        HEIGHT = Board.getHeight()*Board.PANEL_SIZE+2*BORDER;
+        boardComponent = new BoardComponent(board);
+        setupFrame(mainMenu);
+        showMenuFrame();
+    }
+    private void setupFrame(JFrame frame){
+        frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(WIDTH,HEIGHT);
+        frame.setLayout(new BorderLayout());
+        frame.setVisible(true);
+    }
+    public void showMenuFrame(){
+        startButton = new JButton("Start");
+        setupFrame(mainMenu);
+        mainMenu.add(startButton, BorderLayout.PAGE_START);
+        startButton.setVisible(true);
+        startButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                board.isRunning = true;
+                mainMenu.dispose();
+                setupFrame(gameFrame);
+                gameFrame.addKeyListener(board);
+                gameFrame.add(boardComponent,BorderLayout.CENTER);
+                startClock();
+            }
+        });
+    }
+    private void startClock(){
+        Timer clockTimer = new Timer(250, doOneStep);
         clockTimer.setCoalesce(true);
         clockTimer.start();
-        boardComponent = new BoardComponent(board);
-        setLayout(new BorderLayout());
-        add(boardComponent,BorderLayout.CENTER);
-        addKeyListener(board);
-
-
-
     }
 
     private final Action doOneStep = new AbstractAction() {
 
         @Override public void actionPerformed(ActionEvent e) {
             if (board.isRunning) {
-                System.out.println("tick");
                     board.tick();
                     boardComponent.repaint();
-
             }
         }
     };
-
 }
 
